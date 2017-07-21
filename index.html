@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>自宅の気温</title>
+<link rel="shortcut icon" href="favicon.png" >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+<script src="http://cdn.mlkcca.com/v0.6.0/milkcocoa.js"></script>
+<script src="chart.js"></script>
+<script>
+window.addEventListener('load', function () {
+
+  var milkcocoa = new MilkCocoa("teaiyahvzzp.mlkcca.com");
+  var datastore = [];
+
+  var chart = new createChart();
+      chart.setSvg("temp");
+      chart.init();
+  
+
+  milkcocoa.dataStore('temp').stream().size(999).next(function(err, datas) {
+    datastore = datas.map(function(d) {
+      //console.log(d.value.temp);
+      if(d.value.temp<10){
+      d.value.temp=( '0' + d.value.temp ).slice( -(d.value.temp.length+1));
+      //console.log(d.value.temp);
+      }
+      return {
+        timestamp : d.timestamp,
+        value : d.value.temp
+      }
+    });
+
+    chart.setDatas(datastore);
+    chart.initialDraw();
+  })
+    chart.setDatas(datastore);
+    chart.initialDraw();
+  /*
+var chart = new createChart();
+      chart.setSvg("humid");
+      chart.init();
+  
+
+  milkcocoa.dataStore('humid').stream().size(144).next(function(err, datas) {
+    console.log(datas);
+    datastore = datas.map(function(d) {
+      return {
+        timestamp : d.timestamp,
+        value : d.value.humid
+      }
+    });
+
+    chart.setDatas(datastore);
+    chart.initialDraw();
+  });
+*/
+/*var chart = new createChart();
+  chart.setSvg("pressure");
+      chart.init();
+  
+
+  milkcocoa.dataStore('pressure').stream().size(144).next(function(err, datas) {
+    console.log(datas);
+    datastore = datas.map(function(d) {
+      return {
+        timestamp : d.timestamp,
+        value : d.value.pressure
+      }
+    });
+
+    chart.setDatas(datastore);
+    chart.initialDraw();
+  });
+
+  milkcocoa.dataStore('ambient').on('push', function(pushed) {
+    datastore.push({
+      timestamp : pushed.timestamp,
+      value : pushed.value.v
+    });
+    datastore.shift();
+
+    chart.setDatas(datastore);
+    chart.updateDraw();
+  });*/
+});
+</script>
+
+<style>
+html, body{
+  background-color: #222;
+}
+.chart {
+  width: 1040px;
+  height: 420px;
+}
+.domain{
+  stroke-width: 1px;
+  stroke: #f2f2ff;
+}
+text{
+  font-size: 11px;
+  fill: #efefef;
+}
+path{
+  fill: none;
+  stroke: #ffcc60;
+  stroke-width: 5px;
+}
+
+	</style>
+</head>
+<body>
+	<p style="text-align: center; color: #fff; font-size: 13px;">
+   自宅の温度 
+  </p>
+  <div id=nowtemp></div>
+	<div id="temp" style="margin: 0 auto; width: 1040px;"></div>
+  <div id=timeline style="text-align : center;">
+<a class="twitter-timeline" data-width="1080" data-theme="dark" data-link-color="#2B7BB9" href="https://twitter.com/ishihara_lab">Tweets by ishihara_lab</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+</body>
+</html>
